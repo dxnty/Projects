@@ -61,7 +61,7 @@ int main() {
       numPianiHotel = 0; /* numero di piani di cui la struttura è effettivamente dotata */
 
    /* char *var || string */
-   char nomeHotel[20];
+   char nomeHotel[25];
 
    /* TipoLista */
    TipoLista lista;
@@ -139,9 +139,7 @@ int main() {
 } /* ~~~ FINE FUNZIONE MAIN ~~~ */
 
 
-
 /* ~~ CODICE FUNZIONI ↓ ~~ */
-
 void initLista(TipoLista *lista)
 {
    *lista = NULL;
