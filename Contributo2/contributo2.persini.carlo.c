@@ -10,6 +10,7 @@
 
     [Problem] non viene rilevata una stanza che invece è libera
     [Problem] funzione :: modStanza() || una volta inserito il codice della stanza da modificare non accade nulla ed esce dalla funzione
+    [Problem] funzione :: removeStanza() ||   ho sbagliato ad inserire il code della stanza da eliminare ma non me lo ha segnalato
 
     ~Carlo Persini , 1995178
  */
@@ -105,7 +106,7 @@ int main() {
 
          case 2: /* stampa le stanze della struttura */
             condRisp = 0;
-            printf("\n\tDesideri visualizzare tutte le stanze, solo quelle occupate o solo quelle libere[0 , 1 , 2]? -> ");
+            printf("\n\tDesideri visualizzare tutte le stanze, solo quelle occupate o solo quelle libere [0 , 1 , 2]? -> ");
             scanf("%d" , &condRisp);
             stampaStanze(lista , condRisp);
             condLoop = 1;
@@ -331,6 +332,7 @@ void removeStanza(TipoLista *lista) {
          prec = *lista;
          corr = (*lista)->next;
          free(prec); /* "liberazione" della zona di memoria occupata */
+         *lista = corr;
       }
       else { /* se il codice non corrisponde a quello del primo nodo in lista */
          prec = *lista; /* prec punta al primo elemento */
