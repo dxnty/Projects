@@ -27,10 +27,10 @@ struct infoStanza {
    int pianoStanza; /* indica il piano in cui si trova la stanza */
    int statoStanza; /* indica se la stanza in questo istante è occupata o meno  ::  1 -> occupata | 0 -> libera */
 };
-typedef struct infoStanza infoStanza;
+typedef struct infoStanza TipoElem;
 
 struct Hotel {
-   infoStanza infoStanzaSingola;
+   TipoElem infoStanzaSingola;
    struct Hotel *next;
 };
 typedef struct Hotel TipoNodo;
@@ -46,6 +46,10 @@ void removeOccupazione(TipoLista *); /* opposto della funzione addOccupazione() 
 void stampaStanze(TipoLista , int); /* stampa le stanze presenti in struttura con la possibilità d'applicare dei filtri */
 void modStanza(TipoLista * , int); /* permette al cliente di modificare le informazioni riguardo le stanze presenti in struttura */
 void removeStanza(TipoLista *); /* consente l'eliminazione di camere dalla struttura */
+void buildFromFile(TipoLista * , const char * , char * , int *); /* carica le informazioni dal file e le inserisce nella lista || parametri:: (&lista , nomefile , nomeHotel , numPianiHotel)  */
+void readSettingsFromFile(FILE * , char * , int *);
+void readFromFile(FILE * , TipoElem *);
+void addElemToLista(TipoLista * , TipoElem );
 int checkEsisteCodice(TipoLista , int); /* controlla l'effettiva esistenza nella struttura di una camera avendo ricevuto il codice di quest'ultima */
 
 
@@ -53,6 +57,9 @@ int checkEsisteCodice(TipoLista , int); /* controlla l'effettiva esistenza nella
 
 int main() {
  
+   /* const */
+   const char nomeFile[8] = "save.txt";
+
    /* int */
    int condLoop = 1, /* variabile di ciclo */
       condScelta = 0, /* variabile di scelta per lo switch */
@@ -61,26 +68,30 @@ int main() {
       numStanzeOccupate = 0, /* numero delle stanze attualmente occupate */
       numPianiHotel = 0; /* numero di piani di cui la struttura è effettivamente dotata */
 
-   /* char *var || string */
-   char nomeHotel[25];
+   /* char *var || string || char */
+   char nomeHotel[20];
+   char condSave = ' ';
+   char condYes = 's';
 
    /* TipoLista */
    TipoLista lista;
    initLista(&lista); /* inizializzazione della lista a NULL */
 
+   printf("\n\tSalve! Ha dei salvataggi precedenti [s/n]? ->  ");
+   scanf(" %c" , &condSave);
+   if ( strcmp(&condSave , &condYes)) {
+      buildFromFile(&lista, nomeFile , nomeHotel , &numPianiHotel);
+   }
+   else {
 
-   printf("\n\tSalve! Inserisca nome struttura -> ");
-   scanf(" %20s" , nomeHotel );
+      printf("\n\tInserisca nome struttura -> ");
+      scanf(" %19s" , nomeHotel );
 
-   printf("\n\tDi quanti piani dispone la struttura? -> ");
-   scanf("%d" , &numPianiHotel);
-   if (numPianiHotel <= 0) { printf("\n\tMi spiace ma non è possibile.\n"); exit(-1); }
-
-   /*
-   printf("\n\tQuante stanze possiede in tutto? -> ");
-   scanf("%d" , &numStanzeTot);
-   if  (numStanzeTot <= 0) { printf("\n\tNon è cortese far perdere tempo!\n"); exit(-1); } */
-
+      printf("\n\tDi quanti piani dispone la struttura? -> ");
+      scanf("%d" , &numPianiHotel);
+      if (numPianiHotel <= 0) { printf("\n\tMi spiace ma non è possibile.\n"); exit(-1); }
+   
+   }
    printf("\n\tPerfetto %s! Procediamo ... " , nomeHotel);
 
    do {
@@ -125,7 +136,11 @@ int main() {
             removeStanza(&lista);
             break;
 
-         case 6: /* chiudi applicazione */
+         case 6: /* salva su file e chiudi app */
+            
+            break;
+            
+         case 7: /* chiudi app senza salvare */
             condLoop = 0;
             break;
             
@@ -154,7 +169,8 @@ void stampaMenu()
    printf("\n\t 3- Modifica informazioni stanza\n");
    printf("\n\t 4- Aggiungi stanza alla tua struttura\n");
    printf("\n\t 5- Rimuovi stanza dalla tua struttura\n");
-   printf("\n\t 6- Chiudi applicazione\n\n");
+   printf("\n\t 6- Salva e chiudi\n");
+   printf("\n\t 7- Chiudi senza salvare\n\n");
    printf("\t-> ");
 }
 
@@ -444,5 +460,47 @@ void modStanza(TipoLista *lista , int numPiani)
       } /* fine else || se la stanza non si trova al primo nodo */
       
    }/* fine else || se la lista presenta elementi al suo interno */
+
+} /* fine funzione modStanza() */
+
+void readSettingsFromFile(FILE *fin , char nomeHotel[20] , int *numpiani) {
+   fscanf(fin, "%s %d" , nomeHotel , &(*numpiani));
+}
+
+void readFromFile(FILE *fin , TipoElem *elem) {
+   fscanf(fin , "%d %d %d" , &(elem->codiceStanza) , &(elem->pianoStanza) , &(elem->statoStanza) ) ;
+}
+
+void addElemToLista(TipoLista *lista , TipoElem elem) {
+   TipoNodo *newnode = malloc(sizeof(TipoNodo));
+   TipoNodo *last;
+
+   if (!newnode) { printf("\n\t ~~~ Errore allocazione memoria ~~~\n");  exit(-1);}
+   newnode->infoStanzaSingola = elem;
+   newnode->next = NULL;
+
+   if (!(*lista)) { *lista = newnode; } /* se la lista non contiene elementi */
+   else { /* se all'interno della lista ci sono già altri elementi */
+      last = *lista;
+      while (last->next) {
+         last = last->next;
+      }
+      last->next = newnode;
+   }
+}
+
+void buildFromFile(TipoLista *lista , const char nomeFile[8] , char *nomeHotel , int *numpiani) {
+   TipoElem elem;
+   FILE *fin = fopen(nomeFile , "r");
+      if (!fin) { printf("\n\t ~~~ Errore apertura file ~~~\n"); exit(-1); }
+   int count = 1;
+   
+   while (!feof(fin)) {
+      if (count <= 2)
+         readSettingsFromFile(fin , nomeHotel , numpiani);
+      readFromFile(fin , &elem);
+      addElemToLista(lista , elem);
+   }
+   fclose(fin);
 
 }
