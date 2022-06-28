@@ -1,5 +1,5 @@
 /* DESCRIZIONE ESERCIZIO ↓ 
-   # Questo programma ci consente di simulare la gestione di un hotel (privo di sistema prenotativo), come ad esempio: 
+   # Questo programma ci consente di simulare la gestione di un hotel (privo di sistema prenotativo) 
         1] Nome struttura ,
         2] Numero clienti nella struttura ,
         3] Numero delle stanze occupate ,
@@ -8,15 +8,13 @@
         X] etc....
     È ovviamente presente la possibilità di caricare/salvare da/su file.
 
-    [Problem] funzione :: modStanza() || una volta inserito il codice della stanza da modificare non accade nulla ed esce dalla funzione
-
     ~Carlo Persini , 1995178
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <ctype.h>
 
 /* ~ DICHIARAZIONI STRUTTURE ~ */
 
@@ -45,8 +43,9 @@ void stampaStanze(TipoLista , int); /* stampa le stanze presenti in struttura co
 void modStanza(TipoLista * , int); /* permette al cliente di modificare le informazioni riguardo le stanze presenti in struttura */
 void removeStanza(TipoLista *); /* consente l'eliminazione di camere dalla struttura */
 void buildFromFile(TipoLista * , const char * , char * , int *); /* carica le informazioni dal file e le inserisce nella lista || parametri:: (&lista , nomefile , nomeHotel , numPianiHotel)  */
-void readSettingsFromFile(FILE * , char * , int *); /* legge dal file informazioni come il nome e di quanti piani dispone l'hotel */
-void readFromFile(FILE * , TipoElem *); /* legge dal file le informazioni riguardo le stanze presenti sul file*/
+int checkFile(const char *); /* verifica l'esistenza del file */
+ /* void readSettingsFromFile(FILE * , char * , int *);  legge dal file informazioni come il nome e di quanti piani dispone l'hotel */ 
+ /* void readFromFile(FILE * , TipoElem *); legge dal file le informazioni riguardo le stanze presenti sul file*/
 void addElemFromFileToLista(TipoLista * , TipoElem ); /* prende gli elementi dal file e li carica sulla lista*/
 void saveOnFile(TipoLista , const char * , char * , int); /* salva i dati presenti sulla lista nel file */
 int checkEsisteCodice(TipoLista , int); /* controlla l'effettiva esistenza nella struttura di una camera avendo ricevuto il codice di quest'ultima */
@@ -78,10 +77,11 @@ int main() {
 
    printf("\n\tSalve! Ha dei salvataggi precedenti [s/n]? ->  ");
    scanf(" %c" , &condSave);
-   if ( strcmp(&condSave , &condYes)) {
+   condSave = tolower(condSave); /* in questo modo se l'utente scriverà 'S' anziché 's' il programma non incapperà in degli errori || porta il parametro a lowercase  */
+   if ( condSave == 's' && checkFile(nomeFile) == 0) {
       buildFromFile(&lista, nomeFile , nomeHotel , &numPianiHotel);
    }
-   else {
+   else{
 
       printf("\n\tInserisca nome struttura -> ");
       scanf(" %s" , nomeHotel );
@@ -139,7 +139,6 @@ int main() {
             break;
 
          case 6: /* salva su file e chiudi app */
-            printf("\n\t ~~~ Nome file : %s ~~~" , nomeFile);
             saveOnFile(lista , nomeFile , nomeHotel , numPianiHotel);
             condLoop = 0;
             break;
@@ -251,7 +250,7 @@ void addOccupazione(TipoLista *lista)
 {
    int codStanza = 0 , condLoop = 1;
 
-   stampaStanze(*lista , 0); /* stampa tutte le stanze grazie all'argomento '0' */
+   stampaStanze(*lista , 2); /* stampa tutte le stanze libere grazie all'argomento '2' */
    printf("\n\t []Inserisci codice stanza -> "); /* il codice della stanza che sta per essere occupata */
    scanf("%d" , &codStanza);
 
@@ -298,6 +297,8 @@ void stampaStanze(TipoLista lista , int condStampa)
 {
    TipoNodo *newnode = lista;
    int i = 1 , codStanza = 0;
+
+   if ( !lista ) { printf("\n\tNon ci sono stanze da mostrare!");  return ;}
 
    if (condStampa == 0) {  /* stampa TUTTE le stanze */
       while (newnode != NULL) {
@@ -417,14 +418,14 @@ void modStanza(TipoLista *lista , int numPiani)
 
       if ( (*lista)->infoStanzaSingola.codiceStanza == mod_stanza ) { /* se la stanza da modificare è il primo elemento della lista */
          /* il ciclo while viene utilizzato per assicurarci che il nuovo codice non sia già presente assegnato ad un'altra stanza */
-         condLoop = 0;
+         condLoop = 1;
          while ( condLoop == 1 ) {
             printf("\n\tInserisci il nuovo codice: ");
             scanf("%d" , &newcode);
             if ( checkEsisteCodice(*lista , newcode) == 1) { printf("\n\tQuesto codice esiste già, inseriscine un altro per favore"); }
             else { condLoop = 0; }
          }
-         condLoop = 0;
+         condLoop = 1;
          while (condLoop == 1) {
             printf("\n\tInserisci il nuovo piano: ");
             scanf("%d" , &newpiano);
@@ -478,13 +479,13 @@ void modStanza(TipoLista *lista , int numPiani)
 
 } /* fine funzione modStanza() */
 
-void readSettingsFromFile(FILE *fin , char nomeHotel[20] , int *numpiani) {
+/* void readSettingsFromFile(FILE *fin , char nomeHotel[20] , int *numpiani) {
    fscanf(fin, "%s %d" , nomeHotel , numpiani);
 }
 
 void readFromFile(FILE *fin , TipoElem *elem) {
-   fscanf(fin , "%d %d %d" , &(elem->codiceStanza) , &(elem->pianoStanza) , &(elem->statoStanza) ) ;
-}
+   
+}*/
 
 void addElemFromFileToLista(TipoLista *lista , TipoElem elem) {
    TipoNodo *newnode = malloc(sizeof(TipoNodo));
@@ -509,17 +510,26 @@ void buildFromFile(TipoLista *lista , const char nomeFile[8] , char *nomeHotel ,
    FILE *fin = fopen(nomeFile , "r");
       if (!fin) { printf("\n\t ~~~ Errore apertura file ~~~\n"); exit(-1); }
    int count = 1;
-   
+
    while (!feof(fin)) {
-      if (count <= 2) {
-         //printf("\n\t ~~~~ build - while) Nome file : %s ~~~~" , nomeFile);
-         readSettingsFromFile(fin , nomeHotel , numpiani);
+      if (count == 1) {
+         fscanf(fin , "%s %d\n" , nomeHotel , numpiani);
+         printf(" ~~~~ %s %d ~~~~\n" , nomeHotel , *numpiani);
       }
-      readFromFile(fin , &elem);
-      addElemFromFileToLista(lista , elem);
+      else { 
+         fscanf(fin , "%d %d %d\n" , &(elem.codiceStanza) , &(elem.pianoStanza) , &(elem.statoStanza) ) ;
+         printf(" ~~~~ %d %d %d ~~~~\n " , elem.codiceStanza , elem.pianoStanza , elem.statoStanza);
+         addElemFromFileToLista(lista , elem);
+      }
+      count += 1;
    }
    fclose(fin);
+}
 
+int checkFile(const char nomeFile[8]) {
+   FILE *fin = fopen(nomeFile , "r");
+      if (!fin) { printf("\n\t ~~~ Errore apertura file || Sei sicuro di averne? :p ~~~\n"); return -1; }
+      else { return 0; }
 }
 
 
@@ -532,9 +542,7 @@ void saveOnFile(TipoLista lista , const char nomeFile[8] , char nomeHotel[20] , 
 
    if (!fout) { printf("\n\tErrore nell'apertura del file in scrittura!\n"); exit(-1);}
 
-   fprintf(fout , "%s\n" , nomeHotel);
-   fprintf(fout , "%d\n" , numPiani);
-   
+   fprintf(fout , "%s %d\n" , nomeHotel , numPiani);
    node = lista;
    while (node) {
       info.codiceStanza = node->infoStanzaSingola.codiceStanza;
