@@ -1,12 +1,12 @@
 /* DESCRIZIONE ESERCIZIO ↓ 
-   # Questo programma ci consente di simulare la gestione di un hotel (privo di sistema prenotativo) 
+   # Questo programma ci consente di simulare la gestione di un hotel (privo di sistema prenotativo). Presenta la possibilità di inserire e gestire variabili come:
         1] Nome struttura ,
-        2] Numero clienti nella struttura ,
+        2] Numero di piani di cui la struttura dispone ,
         3] Numero delle stanze occupate ,
         4] Numero di stanze ancora disponibili ,
-        5] Numero stanza ,
+        5] Codice della stanza ,
         X] etc....
-    È ovviamente presente la possibilità di caricare/salvare da/su file.
+    È disponibile inoltre la possibilità di salvare e caricare i propri dati in modo da poter riprendere il proprio lavoro da dove lo si aveva lasciato.
 
     ~Carlo Persini , 1995178
  */
@@ -21,34 +21,40 @@
 struct infoStanza {
    int codiceStanza; /* codice identificativo della stanza [variabile primaria] */
    int pianoStanza; /* indica il piano in cui si trova la stanza */
-   int statoStanza; /* indica se la stanza in questo istante è occupata o meno  ::  1 -> occupata | 0 -> libera */
+   int statoStanza; /* indica se la stanza, nel momento della visualizzazione, è occupata o meno  ::  1 -> occupata | 0 -> libera */
 };
-typedef struct infoStanza TipoElem;
+typedef struct infoStanza TipoElem; 
 
 struct Hotel {
-   TipoElem infoStanzaSingola;
-   struct Hotel *next;
+   TipoElem infoStanzaSingola; /* conterrà le informazioni della stanza (vedi struct infoStanza) */
+   struct Hotel *next; /* puntatore ricorsivo || conterrà l'indirizzo (se presente) del nodo successivo */
 };
 typedef struct Hotel TipoNodo;
 typedef TipoNodo *TipoLista;
 
-/* DICHIARAZIONI FUNZIONI */
+/* DICHIARAZIONE FUNZIONI */
 
-void initLista(TipoLista *); /* inizializzazione lista */
+void initLista(TipoLista *); /* inizializzazione lista a NULL*/
 void stampaMenu(); /* stampa il menu' con le opzioni fra cui scegliere */
-void addStanzaToHotel(TipoLista * , int * , int); /* aggiunge una stanza alla struttura del cliente */
+void addStanzaToHotel(TipoLista * , int * , int); /* permette l'aggiunta di stanze alla struttura */
 void addOccupazione(TipoLista *); /* cambia lo stato della stanza da 0 ad 1, cioè da libera ad occupata */
-void removeOccupazione(TipoLista *); /* opposto della funzione addOccupazione() : modifica la stanza da occupata a libera */
-void stampaStanze(TipoLista , int); /* stampa le stanze presenti in struttura con la possibilità d'applicare dei filtri */
+void removeOccupazione(TipoLista *); /* opposto della funzione addOccupazione() : modifica lo stato della stanza per impostarla da occupata (1) a libera (0) */
+void stampaStanze(TipoLista , int); /* stampa le stanze presenti in struttura con la possibilità d'applicare dei filtri (come ad esempio: stampare solo stanze libere, solo occupate etc) */
 void modStanza(TipoLista * , int); /* permette al cliente di modificare le informazioni riguardo le stanze presenti in struttura */
-void removeStanza(TipoLista *); /* consente l'eliminazione di camere dalla struttura */
+void removeStanza(TipoLista *); /* consente l'eliminazione di stanze dalla struttura (stanza non più disponibile per lavori o qualsiasi altra evenienza) */
 void buildFromFile(TipoLista * , const char * , char * , int *); /* carica le informazioni dal file e le inserisce nella lista || parametri:: (&lista , nomefile , nomeHotel , numPianiHotel)  */
-int checkFile(const char *); /* verifica l'esistenza del file */
- /* void readSettingsFromFile(FILE * , char * , int *);  legge dal file informazioni come il nome e di quanti piani dispone l'hotel */ 
- /* void readFromFile(FILE * , TipoElem *); legge dal file le informazioni riguardo le stanze presenti sul file*/
-void addElemFromFileToLista(TipoLista * , TipoElem ); /* prende gli elementi dal file e li carica sulla lista*/
-void saveOnFile(TipoLista , const char * , char * , int); /* salva i dati presenti sulla lista nel file */
-int checkEsisteCodice(TipoLista , int); /* controlla l'effettiva esistenza nella struttura di una camera avendo ricevuto il codice di quest'ultima */
+int checkFile(const char *); /* verifica l'esistenza del file in modo da evitare che il programma si chiuda successivamente al tentativo d'apertura */
+ /* void readSettingsFromFile(FILE * , char * , int *);  legge dal file informazioni come il nome e di quanti piani dispone l'hotel [RIMOSSA]*/ 
+ /* void readFromFile(FILE * , TipoElem *); legge dal file le informazioni riguardo le stanze presenti sul file [RIMOSSA] */
+void addElemFromFileToLista(TipoLista * , TipoElem ); /* prende gli elementi dal file e li carica sulla lista (tramite inserimento in coda) */
+/* 
+   ~~~ riguardo la funzione [ addElemFromFileToLista() ] :: ho deciso di utilizzare l'inserimento in coda in quanto ritengo renda l'applicazione più similare ad un software lavorativo reale;
+   Difficilemente  infatti ho visto applicazioni in cui l'ultimo elemento inserito diviene il primo ad essere stampato, ci sono sicuramente degli scenari in cui questa soluzione risulta comoda e 
+   più immediata, ma ho reputato che questo non fosse uno di quelli. ~~~
+
+*/
+void saveOnFile(TipoLista , const char * , char * , int); /* salva i dati presenti sulla lista all'interno del file */
+int checkEsisteCodice(TipoLista , int); /* controlla l'effettiva esistenza di una camera avendo ricevuto il codice di quest'ultima */
 
 
 /* ~~~ FUNZIONE MAIN ~~~ */
@@ -68,7 +74,7 @@ int main() {
 
    /* char *var || string || char */
    char nomeHotel[20];
-   char condSave = ' ';
+   char condSave = ' '; /* conterrà la 'risposta' alla domanda ""  */
    char condYes = 's';
 
    /* TipoLista */
@@ -192,6 +198,7 @@ int checkEsisteCodice(TipoLista lista , int codice)
          paux = paux->next;
       }
    }
+
    return bool; /* 0 se non è stato trovato */
 }
 
