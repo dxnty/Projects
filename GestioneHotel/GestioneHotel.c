@@ -8,7 +8,7 @@
         X] etc....
     È disponibile inoltre la possibilità di salvare e caricare i propri dati in modo da poter riprendere il proprio lavoro da dove lo si aveva lasciato.
 
-    ~Carlo Persini , 1995178
+    ~Carlo Persini
  */
 
 #include <stdio.h>
