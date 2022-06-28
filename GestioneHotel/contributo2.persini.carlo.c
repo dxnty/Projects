@@ -62,7 +62,7 @@ int checkEsisteCodice(TipoLista , int); /* controlla l'effettiva esistenza di un
 int main() {
  
    /* const */
-   const char nomeFile[9] = "save.txt";
+   const char nomeFile[9] = "save.txt"; /* auto esplicativo */
 
    /* int */
    int condLoop = 1, /* variabile di ciclo */
@@ -74,8 +74,8 @@ int main() {
 
    /* char *var || string || char */
    char nomeHotel[20];
-   char condSave = ' '; /* conterrà la 'risposta' alla domanda ""  */
-   char condYes = 's';
+   char condSave = ' '; /* conterrà la 'risposta' alla domanda "Hai dei salvataggi precedenti?"  */
+   
 
    /* TipoLista */
    TipoLista lista;
@@ -110,18 +110,18 @@ int main() {
             printf("\n\t1] Qualcuno desidera occupare una stanza.\n\t2] Qualcuno desidera lasciare la sua stanza.\n\t-> ");
             scanf("%1d" , &condRisp);
             if (condRisp == 1) {
-               addOccupazione(&lista);
+               addOccupazione(&lista); 
             }
             else if (condRisp == 2) {
                removeOccupazione(&lista);
             }
-            else { 
+            else { /* se viene inserito un valore diverso da 1 o 2 */
                printf("\n\tScusami, non ho capito!\n");
             }
             condLoop = 1;
             break;
 
-         case 2: /* stampa le stanze della struttura */
+         case 2: /* stampa le stanze della struttur */
             condRisp = 0;
             printf("\n\tDesideri visualizzare tutte le stanze, solo quelle occupate o solo quelle libere [0 , 1 , 2]? -> ");
             scanf("%d" , &condRisp);
