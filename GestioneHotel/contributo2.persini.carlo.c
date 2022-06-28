@@ -121,7 +121,7 @@ int main() {
             condLoop = 1;
             break;
 
-         case 2: /* stampa le stanze della struttur */
+         case 2: /* stampa le stanze della struttura */
             condRisp = 0;
             printf("\n\tDesideri visualizzare tutte le stanze, solo quelle occupate o solo quelle libere [0 , 1 , 2]? -> ");
             scanf("%d" , &condRisp);
@@ -195,7 +195,7 @@ int checkEsisteCodice(TipoLista lista , int codice)
          return bool;
       }
       else {
-         paux = paux->next;
+         paux = paux->next; /* se non è stato trovato scorre al prossimo nodo */
       }
    }
 
