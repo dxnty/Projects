@@ -195,10 +195,10 @@ int checkEsisteCodice(TipoLista lista , int codice)
          return bool;
       }
       else {
-         paux = paux->next; /* se non è stato trovato scorre al prossimo nodo */
+        paux = paux->next; /* se non è stato trovato scorre al prossimo nodo */
       }
    }
-
+   
    return bool; /* 0 se non è stato trovato */
 }
 
@@ -208,6 +208,7 @@ void addStanzaToHotel(TipoLista *lista , int *stanze , int numPiani )
    int codstanza = 0; /* codice della stanza da aggiungere */
    int pianostanza = 0; /* il piano in cui si trova la stanza */
    int condLoop = 1; /* variabile di ciclo */
+
 
 
    TipoNodo *ultimo;
