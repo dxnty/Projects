@@ -1,4 +1,4 @@
-#include <stdlib.h>
+#include <stdlib.h> 
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
@@ -15,8 +15,8 @@ typedef struct libro Libro;
 
 struct libreria {
     char nomeLibreria[20]; /* nome libreria */
-    Libro libro[MAXLIBRI];
-    int numLibri; /* numero di libri che possiede */
+    Libro *libroVect;
+    int numLibri; /* numero di libri che possiede || numero massimo: 10 */
 };
 typedef struct libreria TipoLibreria; /* array di strutture */
 
@@ -27,6 +27,8 @@ void removeLibro(TipoLibreria *); /* funzione che permette la rimozione di un li
 void modificaLibro(TipoLibreria *); /* funzione che consente la modifica dei valori di un libro contenuto nella libreria */
 void apriLib(); /* È ora di aprire! Buongiorno! C: */
 void closeLib(); /* È ora di andare a dormire! Buonanotte C: */
+int checkEsisteCodice(int); /* se il codice passato come parametro è già stato utilizzato allora returna 1, altrimenti 0 */
+
 
 void builFromFile(); /* acquisisce i dati dal file di testo */
 void saveOnFile(); /* salva i dati acquisiti durante l'esecuzione dell'app all'interno del file di testo 'save.txt' */
@@ -58,7 +60,7 @@ int main() {
             printf("\n\tD'accordo! Piacere di conoscerti!\n\t[] Inserisci il nome della libreria per favore! ->  ");
             scanf("%s" , nomeLib);
             strcpy(Libreria.nomeLibreria , nomeLib);
-            printf("\n\t {} Fantastico nome! ~~ Procediamo!\n");
+            printf("\n\t {} Fantastico nome! ~~ Procediamo!\n\n");
             condLoop = 0;
         } 
         else if ( condSave != 's' && condSave != 'n' ) { printf("\n\tDevi aver sbagliato a scrivere!\n"); condLoop = 1;} /* se l'utente non ha inserito nè 's' e nè 'n' */
@@ -82,15 +84,15 @@ int main() {
                 condLoop = 1;
                 break;
             case 3: /* Rimuove un libro dalla libreria */
-                removeLibro(&Libreria);
+                //removeLibro(&Libreria);
                 condLoop = 1;
                 break;
             case 4: /* Modifica le informazioni di un libro contenuto nella libreria */
-                modificaLibro(&Libreria);
+                //modificaLibro(&Libreria);
                 condLoop = 1;
                 break;
             case 5: /* Salva e poi termina il programma */
-                saveOnFile();
+                //saveOnFile();
                 condLoop = 1;
                 break;
             case 6: /* Termina il programma senza però prima salvare */
@@ -118,3 +120,81 @@ void stampaMenu() {
     printf("\n\t 6- Chiudi l'applicazione senza salvare\n\n");
     printf("\t-> ");
 }
+
+void stampaLibri(TipoLibreria Lib) {
+	
+	int numlibri = Lib.numLibri; /* in questo modo possiamo rendere più leggibile il codice, senza dover ogni volta riscrivere Lib.numLibri  */
+	int count = 1; /* ci permette di numerare durante il for la stampa dei vari libri, senza dover scrivere i++ */
+
+	if (numlibri <= 0) {
+		printf("\n\t ~~~ Non c'è alcun libro da stampare! ~~~\n\n");
+		return ;
+	}
+	printf("\n\t ~~~ Stampa dei libri presenti in corso ...\n\n");
+	 
+	for (int i = 0 ; i < numlibri ; i++ , count++) /* numero pagine e anno pubblicato */ 
+	{
+		printf("\t %d] Nome libro: %s" , count ,  Lib.libro[i].titolo);
+		printf("\n\t] Codice libro: %d" , Lib.libro[i].codice);
+		printf("\n\t] Anno pubblicazione: %d" , Lib.libro[i].annoPub);
+		printf("\n\t] Numero pagine: %d" , Lib.libro[i].numPagine);
+	}
+	
+}
+
+int checkEsisteCodice( int code ) {
+	
+	/* se il codice è presente nel vettore allora returna 1 altrimenti 0 */
+	return 0;
+
+}
+
+void addLibro(TipoLibreria *Lib) { /* puntatore a Lib perché passiamo Libreria per indirizzo (&) */
+	int annopub = 0; /* anno di pubblicazione del libro */
+	int numpagine = 0; /* numero di pagine che il libro contiene */
+	int condLoop = 1; /* condizione di loop */
+	int code = 0; /* codice del libro inserito dall'utente */	
+	int indexArray; /* ci permette di inserire il libro esattamente all'ultimo spazio libero nell'array */
+	char nomelibro[20];
+	
+	if ( (*Lib).numLibri == 0 ) { indexArray = 0; }
+	else if ( (*Lib).numLibri >= 0 ) { indexArray = (*Lib).numLibri - 1; }
+	else if ( (*Lib).numLibri < 0){ printf("\n\tErrore nel programma! Ci scusiamo per il disagio!\n"); exit(-1); }
+
+	printf("\n\t[] Inserisci il nome del libro -> ");
+	scanf("%s" , nomelibro);
+	
+	while (condLoop == 1) {
+		printf("\n\t[] Inserisci il codice del libro -> ");
+		scanf("%d" , &code);
+		if ( checkEsisteCodice(code) == 0 ) { condLoop = 0; } /* se il codice non esiste */
+		else { printf("\n\t ~~~ Attenzione! Hai inserito un codice che già esiste!\n~~~ "); } /* se il codice è già stato utilizzato per un altro libro */
+	}
+
+	printf("\n\t[] Inserisci l'anno di pubblicazione -> ");
+	scanf("%d" , &annopub);
+	if (annopub > 2022) { printf("\n\tMhh.. un libro dal futuro... intrigante!\n"); }
+	else if (annopub < 1950) { printf("\n\tWow! Un vero reperto storico!\n"); }
+	
+	printf("\n\t[] Inserisci il numero di pagine -> ");
+	scanf("%d" , &numpagine);
+	
+	(*Lib).libroVect[indexArray] = malloc(sizeof(Libro));
+
+	(*Lib).libroVect[indexArray].codice = code;
+	(*Lib).libroVect[indexArray].annoPub = annopub;
+	strcpy(((*Lib).libroVect)->titolo , nomelibro);
+	(*Lib).libroVect[indexArray].numPagine = numpagine;
+	(*Lib).numLibri += 1;	
+}
+
+
+
+
+
+
+
+
+
+
+
