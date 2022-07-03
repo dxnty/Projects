@@ -9,16 +9,17 @@ struct libro {
     int codice; /* codice identificativo del libro */
     int numPagine; /* autoesplicativo */
     int annoPub; /* anno in cui il libro è stato pubblicato */    
-    char titolo[20]; /* nome titolo */
+    char titolo[20]; /* nome del libro */
+	char autore[40]; /* autoesplicativo :: nome - e cognome, se lo si vuole- dell'autore */
 };
 typedef struct libro Libro;
 
 struct libreria {
     char nomeLibreria[20]; /* nome libreria */
-    Libro *libroVect;
+    Libro libroVect[MAXLIBRI];
     int numLibri; /* numero di libri che possiede || numero massimo: 10 */
 };
-typedef struct libreria TipoLibreria; /* array di strutture */
+typedef struct libreria TipoLibreria; /* array di strutture || Tabella dei libri */
 
 void stampaMenu(); /* semplicemente stampa il menu che consente all'utente di scegliere l'azione che desidera compiere */
 void stampaLibri(TipoLibreria); /* permette la stampa dei libri di cui la libreria dispone */
@@ -134,10 +135,12 @@ void stampaLibri(TipoLibreria Lib) {
 	 
 	for (int i = 0 ; i < numlibri ; i++ , count++) /* numero pagine e anno pubblicato */ 
 	{
-		printf("\t %d] Nome libro: %s" , count ,  Lib.libro[i].titolo);
-		printf("\n\t] Codice libro: %d" , Lib.libro[i].codice);
-		printf("\n\t] Anno pubblicazione: %d" , Lib.libro[i].annoPub);
-		printf("\n\t] Numero pagine: %d" , Lib.libro[i].numPagine);
+		
+		printf("\n\t %d] Nome libro: %s" , count ,  Lib.libroVect[i].titolo);
+		printf("\n\t] Autore libro: %s" , Lib.libroVect[i].autore);
+		printf("\n\t] Codice libro: %d" , Lib.libroVect[i].codice);
+		printf("\n\t] Anno pubblicazione: %d" , Lib.libroVect[i].annoPub);
+		printf("\n\t] Numero pagine: %d\n" , Lib.libroVect[i].numPagine);
 	}
 	
 }
@@ -155,15 +158,18 @@ void addLibro(TipoLibreria *Lib) { /* puntatore a Lib perché passiamo Libreria 
 	int condLoop = 1; /* condizione di loop */
 	int code = 0; /* codice del libro inserito dall'utente */	
 	int indexArray; /* ci permette di inserire il libro esattamente all'ultimo spazio libero nell'array */
-	char nomelibro[20];
-	
+	char nomelibro[20]; /* nome/titolo del libro inserito */
+	char autorelibro[40]; /* autore del libro inserito */	
 	if ( (*Lib).numLibri == 0 ) { indexArray = 0; }
-	else if ( (*Lib).numLibri >= 0 ) { indexArray = (*Lib).numLibri - 1; }
+	else if ( (*Lib).numLibri > 0 ) { indexArray = (*Lib).numLibri; }
 	else if ( (*Lib).numLibri < 0){ printf("\n\tErrore nel programma! Ci scusiamo per il disagio!\n"); exit(-1); }
 
 	printf("\n\t[] Inserisci il nome del libro -> ");
 	scanf("%s" , nomelibro);
 	
+	printf("\n\t[] Inserisci autore del libro -> ");
+	scanf("%s" , autorelibro);
+
 	while (condLoop == 1) {
 		printf("\n\t[] Inserisci il codice del libro -> ");
 		scanf("%d" , &code);
@@ -178,14 +184,15 @@ void addLibro(TipoLibreria *Lib) { /* puntatore a Lib perché passiamo Libreria 
 	
 	printf("\n\t[] Inserisci il numero di pagine -> ");
 	scanf("%d" , &numpagine);
-	
-	(*Lib).libroVect[indexArray] = malloc(sizeof(Libro));
 
+	
+	strcpy( (*Lib).libroVect[indexArray].titolo , nomelibro);
+	strcpy( (*Lib).libroVect[indexArray].autore , autorelibro);
 	(*Lib).libroVect[indexArray].codice = code;
 	(*Lib).libroVect[indexArray].annoPub = annopub;
-	strcpy(((*Lib).libroVect)->titolo , nomelibro);
-	(*Lib).libroVect[indexArray].numPagine = numpagine;
-	(*Lib).numLibri += 1;	
+	(*Lib).libroVect[indexArray].numPagine = numpagine; 
+
+	(*Lib).numLibri += 1;
 }
 
 
