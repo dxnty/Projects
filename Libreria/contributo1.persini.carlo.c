@@ -1,3 +1,15 @@
+/* ESERCIZIO N.1 : "Libreria" 
+	In questo programma si potrà gestire il catalogo di una libreria, le varie funzioni inserite ci permettono di:
+	- Visualizzare i libri presenti
+	- Aggiungere libri al catalogo
+	- Rimuovere libri dal catalogo
+	- Modificare libri già inseriti all'interno del catalogo
+	- Salvare l'intero catalogo di libri all'interno di un file di salvataggio esterno
+	- Caricare i dati dal file di salvataggio esterno 
+
+	Carlo Persini , 1995178
+*/
+
 #include <stdlib.h> 
 #include <string.h>
 #include <stdio.h>
@@ -26,8 +38,6 @@ void stampaLibri(TipoLibreria); /* permette la stampa dei libri di cui la librer
 void addLibro(TipoLibreria *); /* funzione che permette l'aggiunta di un libro alla libreria */
 void removeLibro(TipoLibreria *); /* funzione che permette la rimozione di un libro dalla libreria */
 void modificaLibro(TipoLibreria *); /* funzione che consente la modifica dei valori di un libro contenuto nella libreria */
-void apriLib(); /* È ora di aprire! Buongiorno! C: */
-void closeLib(); /* È ora di andare a dormire! Buonanotte C: */
 int checkEsisteCodice(TipoLibreria , int); /* se il codice passato come parametro è già stato utilizzato allora returna 1, altrimenti 0 */
 
 
