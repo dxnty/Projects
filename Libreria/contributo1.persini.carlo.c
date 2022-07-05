@@ -55,6 +55,7 @@ int main() {
 
     /* CHAR */
     char condSave = ' ';
+	
     /* CHAR * || CHAR[] */
     const char nomeFile[10] = "save.txt";
     char nomeLib[40];
