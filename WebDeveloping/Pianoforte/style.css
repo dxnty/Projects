@@ -8,6 +8,9 @@ body {
     background: linear-gradient(#e66465 5%, #9198e5);
     background-attachment: fixed; /* per far si che il gradiente non scorra insieme alla pagina */
     height: 100vh; /* fondamentale per linear-gradient() */
+    display: flex; /* consente la disposizione flex || senza non potremmo centrare correttamente gli items */
+    justify-content: center; /* sull'asse delle x */
+    align-items: center; /* sull'asse delle y */
 }
 
 .piano {
@@ -17,9 +20,56 @@ body {
 .pianoPanel {
     height: 100px;
     background-color: rgba(194, 38, 194, 0.801);
+    background-image: url('images/panel-reflex.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    display: flex;
+    justify-content: end; /* mette gli elementi alla fine dell'asse primaria */
+    align-items: center;
+    padding: 10px
+}
+.pianoPanel img {
+    width: 300px;
+    
 }
 
 .pianoKeys {
-    height:200px;
+    display: flex;
+    height:300px;
     background-color: black;
 }
+
+.key {
+
+}
+
+.key-white {
+    height: 100%;
+    background-color: white;
+    width: 60px;
+    border-right: solid black 2px;
+    border-left: solid black 2px;
+    border-bottom: solid rgb(150, 147, 147) 6px;
+    border-radius: 0 0 8px 8px;
+}
+.key-white:active {
+    background-color: rgb(189, 185, 185);
+}
+
+.key-black {
+    height: 60%;
+    width: 50px;
+    background-color: black;
+    border-right: solid black 2px;
+    border-left: solid black 2px;
+    border-bottom: solid rgb(150, 147, 147) 6px;
+    border-radius: 0 0 8px 8px;
+    /* i margini negativi permettono la sovrapposizione dei tasti */
+    margin-left: -25px;
+    margin-right: -25px;
+    z-index: 2; /* serve poiché altrimenti non sarebbe mostrato con priorita rispetto ai tasti bianchi */
+}
+.key-black:active {
+    background-color: rgb(36, 35, 35);
+}
+
