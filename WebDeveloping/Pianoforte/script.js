@@ -23,6 +23,7 @@ function playSound(key) {
     /* const note = notes[key]; || = notes.key */
     audioElem.src = 'sounds/' + notes[key]; //key = node.id
     audioElem.play();
+    console.log("sounds");
 }   
 
 
