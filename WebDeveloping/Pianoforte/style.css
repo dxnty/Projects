@@ -1,3 +1,25 @@
-html {
-    background-color: lightgray;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* in modo che il box non cambi la sua dimensione in base ad eventuali bordi aggiunti */
+}
+
+body {
+    background: linear-gradient(#e66465 5%, #9198e5);
+    background-attachment: fixed; /* per far si che il gradiente non scorra insieme alla pagina */
+    height: 100vh; /* fondamentale per linear-gradient() */
+}
+
+.piano {
+
+}
+
+.pianoPanel {
+    height: 100px;
+    background-color: rgba(194, 38, 194, 0.801);
+}
+
+.pianoKeys {
+    height:200px;
+    background-color: black;
 }
