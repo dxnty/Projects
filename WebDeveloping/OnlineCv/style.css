@@ -1,0 +1,46 @@
+/* # for id use || . for class use */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    background-color : rgb(0, 110, 255);
+    text-align : left;
+    font-family : Roboto , sans-serif;
+    font-size : 18px;
+    line-height : 25px;
+}
+
+/* id = "firstTitle" || il titolo iniziale */
+#firstTitle {
+    text-align : center;
+    height : 30px;
+}
+#firstTitle span { 
+    background-color: rgba(0, 0, 0, 0.301); 
+}
+
+/* class = "linkPage" || si riferisce a link con collegamento ipertestuale */
+.linkPage {
+    font-weight : bold;
+    text-decoration: none;
+}
+.linkPage:visited {
+    color: rgb(3, 4, 46);
+}
+.linkPage:hover {
+    color : blue;
+}
+
+/* class = title || per i paragrafi che contengono il titolo della categatoria */
+.title {
+    font-size: 28px;
+    font-weight : bold;
+    background-color : rgba(7, 64, 189, 0.363);
+    width : 13%;
+    border-bottom: 4px solid blue;
+    color: darkblue;
+}
+
+
