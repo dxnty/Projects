@@ -1,7 +1,6 @@
-const developerName = "Dxnty"; //name wont change
-console.log("Script made by " + developerName);
+const keyElements = document.querySelectorAll('.key');
+console.log(keyElements);
 
-const buttonKeys = document.querySelectorAll('.key');
 const notes = {
     do: '01-do.mp3',
     dodiesis: '02-dodiesis.mp3',
@@ -17,24 +16,17 @@ const notes = {
     si: '12-si.mp3'
 }
 
-/* dichiarazioni e sviluppo funzioni */
 function playSound(key) {
-    const audioElem = new Audio();
-    /* const note = notes[key]; || = notes.key */
-    audioElem.src = 'sounds/' + notes[key]; //key = node.id
-    audioElem.play();
-    console.log("sounds");
-}   
+    const audioElement = new Audio();
+    const note = notes[key];
+    audioElement.src = 'sounds/' + note;
+    audioElement.play();
+}
 
-
-buttonKeys.forEach(function(node) {
-    node.addEventListener('touchend' , function() {
-        playSound( node.id );
+keyElements.forEach(function(keyElement) {
+    keyElement.addEventListener('touchend', function() {
+        const key = keyElement.id;
+        playSound(key);
     });
 });
-
-
-
-
-
-
+ 
