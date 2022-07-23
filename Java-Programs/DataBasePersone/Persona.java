@@ -19,7 +19,6 @@ public class Persona {
     // Permette di avere in output i dati generali di Persona
     public void stampaGenPersona()
     {
-        System.out.println("\n\t {} Stampa in corso ...\n");
         System.out.println("\n\t {Nome} : " + this.nome);
         System.out.println("\n\t {Cognome} : " + this.cognome);
         System.out.println("\n\t {RegioneDomicilio} : " + this.regione);
@@ -68,4 +67,4 @@ public class Persona {
         this.numCell = numCell;
     }
 
-}  /* End of file */
+}  /* Fine classe */
